@@ -19,6 +19,7 @@
 		104A6D741E3161DF00D7070A /* NavgationBarStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104A6D731E3161DF00D7070A /* NavgationBarStyle.swift */; };
 		104A6D761E3165C900D7070A /* TabBarStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104A6D751E3165C900D7070A /* TabBarStyle.swift */; };
 		104A6D781E31AC4400D7070A /* RunningBrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 104A6D771E31AC4400D7070A /* RunningBrain.swift */; };
+		10ECF5111E36EB21004EE9A6 /* RunningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10ECF5101E36EB21004EE9A6 /* RunningViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		104A6D731E3161DF00D7070A /* NavgationBarStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavgationBarStyle.swift; sourceTree = "<group>"; };
 		104A6D751E3165C900D7070A /* TabBarStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarStyle.swift; sourceTree = "<group>"; };
 		104A6D771E31AC4400D7070A /* RunningBrain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RunningBrain.swift; sourceTree = "<group>"; };
+		10ECF5101E36EB21004EE9A6 /* RunningViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RunningViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				104A6D531E31589000D7070A /* DashViewController.swift */,
+				10ECF5101E36EB21004EE9A6 /* RunningViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -222,6 +225,7 @@
 				104A6D741E3161DF00D7070A /* NavgationBarStyle.swift in Sources */,
 				104A6D521E31589000D7070A /* AppDelegate.swift in Sources */,
 				104A6D701E31609F00D7070A /* ProfileViewController.swift in Sources */,
+				10ECF5111E36EB21004EE9A6 /* RunningViewController.swift in Sources */,
 				104A6D5A1E31589000D7070A /* Runner.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -384,6 +388,7 @@
 				104A6D651E31589000D7070A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

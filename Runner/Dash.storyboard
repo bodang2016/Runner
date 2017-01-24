@@ -58,7 +58,25 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7EV-c9-y7B" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="865" y="-208"/>
+            <point key="canvasLocation" x="980" y="-208"/>
+        </scene>
+        <!--Running View Controller-->
+        <scene sceneID="Cmm-Ov-wFi">
+            <objects>
+                <viewController id="FpR-lo-cI4" customClass="RunningViewController" customModule="Runner" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="OuX-XI-CV6"/>
+                        <viewControllerLayoutGuide type="bottom" id="F3F-ca-2i8"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="GRY-nn-mbS" customClass="R">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SEG-tx-tCj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1746" y="-205"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="r2L-q2-0Rv">

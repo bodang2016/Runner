@@ -8,6 +8,7 @@
 
 import UIKit
 import MapKit
+import Foundation
 
 class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollViewDelegate {
 
@@ -15,6 +16,30 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
     @IBOutlet weak var MapView: MKMapView!
     @IBOutlet weak var scrollView: UIScrollView!
     var runningBrain = RunningBrain()
+    fileprivate var timeIndicatorValue: String {
+        get {
+            return String(timeIndicator.text!)!
+        }
+        set {
+            timeIndicator.text = String(newValue)
+        }
+    }
+    fileprivate var distanceIndicatorValue: String {
+        get {
+            return String(distanceIndicator.text!)!
+        }
+        set {
+            distanceIndicator.text = String(newValue)
+        }
+    }
+    fileprivate var paceIndicatorValue: String {
+        get {
+            return String(paceIndicator.text!)!
+        }
+        set {
+            paceIndicator.text = String(newValue)
+        }
+    }
     
     var colors:[UIColor] = [.white, UIColor.white, UIColor.white, UIColor.white]
     var itemColor = UIColor(red: 212 / 255.0, green: 25 / 255.0, blue: 38 / 255.0, alpha: 1.0)
@@ -45,6 +70,15 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
         
         //Init listener
         quickStart.addTarget(self, action: #selector(self.quickStartAction(sender:)), for: .touchUpInside)
+        distanceRunStart.addTarget(self, action: #selector(self.distanceRunStartAction(sender:)), for: .touchUpInside)
+        timedRunStart.addTarget(self, action: #selector(self.timedRunStartAction(sender:)), for: .touchUpInside)
+        paceRunStart.addTarget(self, action: #selector(self.paceRunStartAction(sender:)), for: .touchUpInside)
+        distanceMinus.addTarget(self, action: #selector(self.distanceMinusAction(sender:)), for: .touchUpInside)
+        distancePlus.addTarget(self, action: #selector(self.distancePlusAction(sender:)), for: .touchUpInside)
+        timeMinus.addTarget(self, action: #selector(self.timeMinusAction(sender:)), for: .touchUpInside)
+        timePlus.addTarget(self, action: #selector(self.timePlusAction(sender:)), for: .touchUpInside)
+        paceMinus.addTarget(self, action: #selector(self.paceMinusAction(sender:)), for: .touchUpInside)
+        pacePlus.addTarget(self, action: #selector(self.pacePlusAction(sender:)), for: .touchUpInside)
         
         //Location Delegate
         runningBrain.getLocationManager().delegate = self
@@ -217,9 +251,99 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
         view.addConstraints([constraintIndicatorPosX, constraintIndicatorPosY, constraintIndicatorHeight, constraintIndicatorWidth, constraintMinusPosX, constraintMinusPosY, constraintMinusHeight, constraintMinusWidth, constraintPlusPosX, constraintPlusPosY, constraintPlusHeight, constraintPlusWidth, constraintStartPosX, constraintStartPosY, constraintStartHeight, constraintStartWidth])
     }
     
+    //Action of UIButton
     func quickStartAction(sender: UIButton) {
         
     }
+    
+    func distanceRunStartAction(sender: UIButton) {
+        print("distance \(distanceIndicatorValue)")
+    }
+    
+    func timedRunStartAction(sender: UIButton) {
+        var timeIndicatorValueArr = timeIndicatorValue.components(separatedBy: ":")
+        let timeIndicatorMinute: Int = Int(timeIndicatorValueArr[0])!
+        let timeIndicatorSecond: Int? = timeIndicatorValueArr.count > 1 ? Int(timeIndicatorValueArr[1]) : nil
+        print("minute \(timeIndicatorMinute) second \(timeIndicatorSecond!)")
+    }
+    
+    func paceRunStartAction(sender: UIButton) {
+        var paceIndicatorValueArr = paceIndicatorValue.components(separatedBy: ":")
+        let paceIndicatorMinute: String = paceIndicatorValueArr[0]
+        let paceIndicatorSecond: String? = paceIndicatorValueArr.count > 1 ? paceIndicatorValueArr[1] : nil
+        print("minute \(paceIndicatorMinute) second \(paceIndicatorSecond!)")
+    }
+    
+    func distanceMinusAction(sender: UIButton) {
+        var temp = Double(distanceIndicatorValue)
+        if temp! > 0.1 {
+            temp! -= 0.1
+            distanceIndicatorValue = String(temp!)
+        }
+    }
+    
+    func distancePlusAction(sender: UIButton) {
+        var temp = Double(distanceIndicatorValue)
+        temp! += 0.1
+        distanceIndicatorValue = String(temp!)
+    }
+    
+    func timeMinusAction(sender: UIButton) {
+        var timeIndicatorValueArr = timeIndicatorValue.components(separatedBy: ":")
+        var timeIndicatorMinute: Int = Int(timeIndicatorValueArr[0])!
+        var timeIndicatorSecond: Int? = timeIndicatorValueArr.count > 1 ? Int(timeIndicatorValueArr[1]) : nil
+        if timeIndicatorMinute == 1 && timeIndicatorSecond == 0 {
+            return
+        } else if timeIndicatorSecond! == 0 {
+            timeIndicatorSecond! = 50
+            timeIndicatorMinute -= 1
+        } else {
+            timeIndicatorSecond! -= 10
+        }
+        timeIndicatorValue = "\(String(timeIndicatorMinute)):\(String(format: "%02d", timeIndicatorSecond!))"
+    }
+    
+    func timePlusAction(sender: UIButton) {
+        var timeIndicatorValueArr = timeIndicatorValue.components(separatedBy: ":")
+        var timeIndicatorMinute: Int = Int(timeIndicatorValueArr[0])!
+        var timeIndicatorSecond: Int? = timeIndicatorValueArr.count > 1 ? Int(timeIndicatorValueArr[1]) : nil
+        if timeIndicatorSecond! < 50 {
+            timeIndicatorSecond! += 10
+        } else {
+            timeIndicatorSecond! = 0
+            timeIndicatorMinute += 1
+        }
+        timeIndicatorValue = "\(String(timeIndicatorMinute)):\(String(format: "%02d", timeIndicatorSecond!))"
+    }
+    
+    func paceMinusAction(sender: UIButton) {
+        var paceIndicatorValueArr = paceIndicatorValue.components(separatedBy: ":")
+        var paceIndicatorMinute: Int = Int(paceIndicatorValueArr[0])!
+        var paceIndicatorSecond: Int? = paceIndicatorValueArr.count > 1 ? Int(paceIndicatorValueArr[1]) : nil
+        if paceIndicatorMinute == 1 && paceIndicatorSecond == 0 {
+            return
+        } else if paceIndicatorSecond! == 0 {
+            paceIndicatorSecond! = 50
+            paceIndicatorMinute -= 1
+        } else {
+            paceIndicatorSecond! -= 10
+        }
+        paceIndicatorValue = "\(String(paceIndicatorMinute)):\(String(format: "%02d", paceIndicatorSecond!))"
+    }
+    
+    func pacePlusAction(sender: UIButton) {
+        var paceIndicatorValueArr = paceIndicatorValue.components(separatedBy: ":")
+        var paceIndicatorMinute: Int = Int(paceIndicatorValueArr[0])!
+        var paceIndicatorSecond: Int? = paceIndicatorValueArr.count > 1 ? Int(paceIndicatorValueArr[1]) : nil
+        if paceIndicatorSecond! < 50 {
+            paceIndicatorSecond! += 10
+        } else {
+            paceIndicatorSecond! = 0
+            paceIndicatorMinute += 1
+        }
+        paceIndicatorValue = "\(String(paceIndicatorMinute)):\(String(format: "%02d", paceIndicatorSecond!))"
+    }
+    
     
     func configurePageControl() {
         // The total number of pages that are available is based on how many available colors we have.
