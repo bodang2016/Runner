@@ -41,7 +41,7 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
         }
     }
     
-    var colors:[UIColor] = [.white, UIColor.white, UIColor.white, UIColor.white]
+    var colors:[UIColor] = [.white, .white, .white, .white]
     var itemColor = UIColor(red: 212 / 255.0, green: 25 / 255.0, blue: 38 / 255.0, alpha: 1.0)
     var frame: CGRect = CGRect(x: 0, y: 0, width: 0, height: 0)
     
@@ -91,6 +91,9 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
         
         scrollView.delegate = self
         scrollView.showsHorizontalScrollIndicator = false
+        scrollView.isUserInteractionEnabled = true
+        scrollView.delaysContentTouches = false
+        self.scrollView.isPagingEnabled = true
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -98,25 +101,23 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
             
             frame.origin.x = self.scrollView.frame.size.width * CGFloat(index)
             frame.size = self.scrollView.frame.size
-            self.scrollView.isPagingEnabled = true
             
             let subView = UIView(frame: frame)
             switch index {
             case 0:
-                subView.backgroundColor = colors[index]
                 quickStart.translatesAutoresizingMaskIntoConstraints = false
                 quickStart.layer.cornerRadius = 6.5
                 quickStart.setTitle("Quick Start", for: UIControlState.normal)
                 quickStart.setTitleColor(.white, for: .normal)
+                quickStart.setTitleColor(UIColor.lightText, for: .highlighted)
                 quickStart.backgroundColor = itemColor
                 subView.addSubview(quickStart)
                 addConstrantToQuickStart(button: quickStart, view: subView)
             case 1:
-                subView.backgroundColor = colors[index]
-                
                 timedRunStart.translatesAutoresizingMaskIntoConstraints = false
                 timedRunStart.layer.cornerRadius = 6.5
                 timedRunStart.setTitle("Start Timed Run", for: UIControlState.normal)
+                timedRunStart.setTitleColor(UIColor.lightText, for: .highlighted)
                 timedRunStart.backgroundColor = itemColor
                 subView.addSubview(timedRunStart)
                 
@@ -149,6 +150,7 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
                 distanceRunStart.translatesAutoresizingMaskIntoConstraints = false
                 distanceRunStart.layer.cornerRadius = 6.5
                 distanceRunStart.setTitle("Start Distance Run", for: UIControlState.normal)
+                distanceRunStart.setTitleColor(UIColor.lightText, for: .highlighted)
                 distanceRunStart.backgroundColor = itemColor
                 subView.addSubview(distanceRunStart)
                 
@@ -181,6 +183,7 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
                 paceRunStart.translatesAutoresizingMaskIntoConstraints = false
                 paceRunStart.layer.cornerRadius = 6.5
                 paceRunStart.setTitle("Start Pace Run", for: UIControlState.normal)
+                paceRunStart.setTitleColor(UIColor.lightText, for: .highlighted)
                 paceRunStart.backgroundColor = itemColor
                 subView.addSubview(paceRunStart)
                 
@@ -208,7 +211,7 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
                 subView.addSubview(paceIndicator)
                 addConstrantToNormalStart(startButton:  paceRunStart, minusButton:  paceMinus, plusButton:  pacePlus, indicator: paceIndicator, view: subView)
             default:
-                break;
+                break
             }
             self.scrollView .addSubview(subView)
         }
@@ -252,8 +255,26 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
     }
     
     //Action of UIButton
-    func quickStartAction(sender: UIButton) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+        let destinationVC = segue.destination
+        if let RunningVC = destinationVC as? RunningViewController {
+            if let identifier = segue.identifier {
+                switch identifier {
+                case "showRunningView":
+                    RunningVC.runningType = "quickStart"
+                default:
+                    return
+                }
+            }
+        }
         
+    }
+
+    
+    func quickStartAction(sender: UIButton) {
+        self.performSegue(withIdentifier: "showRunningView", sender: UIButton.self)
     }
     
     func distanceRunStartAction(sender: UIButton) {
@@ -379,43 +400,11 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
         }
         let region = MKCoordinateRegionMakeWithDistance(currentLocation.coordinate, 1000, 1000)
         MapView.setRegion(region, animated: true)
-        
-//        let paceInMinute = runningBrain.calculatePaceRate(Velocity: currentLocation.speed)["minute"]!
-//        let paceInSecond = runningBrain.calculatePaceRate(Velocity: currentLocation.speed)["second"]!
-//        switch algorithmUse {
-//        case 0:
-//            velocityUse = runningBrain.smoothingVelocityWithAverageNumber(Velocity: currentLocation.speed, Accuracy: currentLocation.horizontalAccuracy)
-//        case 1:
-//            velocityUse = runningBrain.smoothingVelocityWithThreeGapNumber(Velocity: currentLocation.speed, Accuracy: currentLocation.horizontalAccuracy)
-//        case 2:
-//            velocityUse = runningBrain.smoothingVelocityWithStanderDeviation(Velocity: currentLocation.speed, Accuracy: currentLocation.horizontalAccuracy)
-//        case 3:
-//            velocityUse = runningBrain.smoothingVelocityWithKalmanFiltering(Velocity: currentLocation.speed, Accuracy: currentLocation.horizontalAccuracy)
-//        default:
-//            break
-//        }
-//        let paceSmoothInMinute = runningBrain.calculatePaceRate(Velocity: velocityUse)["minute"]!
-//        let paceSmoothInSecond = runningBrain.calculatePaceRate(Velocity: velocityUse)["second"]!
-//        let paceInMinuteNorm = String(format:"%02d",paceInMinute)
-//        let paceInSecondNorm = String(format:"%02d",paceInSecond)
-//        let paceSmoothInMinuteNorm = String(format:"%02d",paceSmoothInMinute)
-//        let paceSmoothInSecondNorm = String(format:"%02d",paceSmoothInSecond)
-//        
-//        longitudeLbl.text = "Longitude: \(currentLocation.coordinate.longitude)"
-//        latitudeLbl.text = "Latitude: \(currentLocation.coordinate.latitude)"
-//        altitudeLbl.text = "Altitude: \(currentLocation.altitude)"
-//        horizontalAccuracyLbl.text = "Horizontal accuracy: \(currentLocation.horizontalAccuracy)"
-//        verticalAccuracyLbl.text = "Vertical accuracy: \(currentLocation.verticalAccuracy)"
-//        headingLbl.text = "Heading: \(currentLocation.course)"
-//        velocityLbl.text = "Velocity: \(velocityUse)"
-//        paceSmoothLbl.text = "PaceSmooth: \(paceSmoothInMinuteNorm):\(paceSmoothInSecondNorm)"
-//        paceLbl.text = "Pace: \(paceInMinuteNorm):\(paceInSecondNorm)"
-//        saveTestDataToDatabase(Velocity: currentLocation.speed, Accuracy: currentLocation.horizontalAccuracy)
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         let errorType = error.localizedDescription
-        let alertController = UIAlertController(title: "Location Service Error", message: errorType, preferredStyle: .alert)
+        let alertController = UIAlertController(title: "GPS Signal Lost", message: errorType, preferredStyle: .alert)
         let okAction = UIAlertAction(title: "OK", style: .cancel, handler: { action in })
         alertController.addAction(okAction)
         present(alertController, animated: true, completion: nil)

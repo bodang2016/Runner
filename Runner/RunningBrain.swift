@@ -12,7 +12,7 @@ import CoreMotion
 
 class RunningBrain {
     private let locationManager: CLLocationManager = CLLocationManager()
-//    private let motionManager: CMMotionManager = CMMotionManager()
+    
     
     private var kalmanSwitch = 0
     private var velocityAssetsIndex = 0
@@ -21,6 +21,11 @@ class RunningBrain {
     private var previousVelocityAssets: Array<Double> = [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
     private var holdVelocity = 0.0
     private var holdAccuracy = 0.0
+    
+    func calculateCalories(Velocity: Double, Weight: Double, Time: Double) -> Double {
+        return Velocity/(20/9) * Weight * Time / 3600.0
+    }
+    
     func smoothingVelocityWithAverageNumber(Velocity:Double, Accuracy: Double) -> Double {
         velocityAssets[velocityAssetsIndex % 10] = Velocity
         velocityAssetsIndex += 1
