@@ -9,8 +9,9 @@
 import UIKit
 import MapKit
 import Foundation
+import Charts
 
-class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationManagerDelegate{
+class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationManagerDelegate, MKMapViewDelegate{
     
     var runningBrain = RunningBrain()
     var runningType: String?
@@ -20,10 +21,21 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
     var timerStr: String?
     var timer = Timer()
     var weight = 70.0
+    var route = [CLLocationCoordinate2D]()
+    
+    var velocityAssetsIndex = 0
+    var velocityAssets: Array<Double> = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    var labelX = [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "]
+    let startTimeStemp = NSDate()
+    var caloriesStr = "-"
+    var distanceStr = "-"
+    
     
     var frame: CGRect = CGRect(x: 0, y: 0, width: 0, height: 0)
     let mapView: MKMapView = MKMapView()
     let returnButton: UIButton = UIButton()
+    
+    let chartView = LineChartView()
     
     @IBOutlet weak var pageControl: UIPageControl!
 
@@ -31,7 +43,8 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
     @IBOutlet weak var mainIndicator: UILabel!
     @IBOutlet weak var secondIndicator: UILabel!
     @IBOutlet weak var secondCaption: UILabel!
-    @IBOutlet weak var caloriesIndicator: UILabel!
+    @IBOutlet weak var thirdIndicator: UILabel!
+    @IBOutlet weak var thirdCaption: UILabel!
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var topView: UIView!
@@ -54,6 +67,9 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
         }
     }
     @IBAction func stopButtonAction(_ sender: UIButton) {
+        runningBrain.getLocationManager().stopUpdatingLocation()
+        CoreDataManager.saveRun(timeStamp: startTimeStemp, duration: Int16(timerCount), distance: Double(distanceStr)!, calories: Double(caloriesStr)!)
+//        CoreDataManager.test()
         dismiss(animated: true, completion: nil)
     }
     override func viewDidLoad() {
@@ -84,11 +100,11 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
         for index in 0..<2 {
             frame.origin.x = self.scrollView.frame.size.width * CGFloat(index)
             frame.size = self.scrollView.frame.size
-            self.scrollView.isPagingEnabled = true
             let subView = UIView(frame: frame)
             switch index {
             case 0:
-//                subView.addSubview(subView)
+                subView.addSubview(chartView)
+                initChartView(chartView: chartView, view: subView)
                 break;
             case 1:
                 subView.addSubview(mapView)
@@ -102,6 +118,45 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
             self.scrollView.contentSize = CGSize(width: self.scrollView.frame.size.width * 2, height: self.scrollView.frame.size.height)
             pageControl.addTarget(self, action: #selector(self.changePage(sender:)), for: UIControlEvents.valueChanged)
         }
+        switch runningType! {
+        case "quickStart":
+            mainCaption.text = "Time"
+            secondCaption.text = "Pace"
+            thirdCaption.text = "Distance"
+        default:
+            break
+        }
+    }
+    
+    func setChart(dataPoints: [String], values: [Double]) {
+        var dataEntries: [ChartDataEntry] = []
+        for i in 0..<dataPoints.count {
+            let dataEntry = ChartDataEntry(x: Double(i), y: values[i])
+            dataEntries.append(dataEntry)
+        }
+        let lineChartDataSet = LineChartDataSet(values: dataEntries, label: nil)
+        lineChartDataSet.cubicIntensity = 0.2
+        let lineChartData = LineChartData()
+        lineChartDataSet.lineWidth = 1.8
+        lineChartDataSet.mode = .cubicBezier
+        lineChartDataSet.circleRadius = 4
+        lineChartDataSet.setCircleColor(.white)
+        lineChartDataSet.drawCirclesEnabled = false
+        lineChartDataSet.fillColor = UIColor(red: 131/255, green: 211/255, blue: 132/255, alpha: 1)
+        lineChartDataSet.fillAlpha = 0.5
+        lineChartDataSet.drawFilledEnabled = true
+        lineChartDataSet.circleRadius = 10
+        lineChartData.addDataSet(lineChartDataSet)
+        chartView.data = lineChartData
+        chartView.drawGridBackgroundEnabled = false
+        chartView.setScaleEnabled(false)
+        chartView.leftAxis.axisMinimum = 0
+        chartView.rightAxis.drawLabelsEnabled = false
+        chartView.rightAxis.drawGridLinesEnabled = false
+        chartView.legend.enabled = false
+        chartView.xAxis.drawGridLinesEnabled = false
+        chartView.chartDescription?.text = ""
+        chartView.xAxis.drawLabelsEnabled = false
     }
 
     func initMapView(mapView: MKMapView, view: UIView) {
@@ -113,6 +168,16 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
         let constraintMapViewHeight: NSLayoutConstraint = NSLayoutConstraint(item: mapView, attribute: .height, relatedBy: .equal, toItem: view, attribute: .height, multiplier: 1.0, constant: 0.0)
         view.addConstraints([constraintMapViewPosX, constraintMapViewPosY, constraintMapViewWidth, constraintMapViewHeight])
         mapView.showsUserLocation = true
+        mapView.delegate = self
+    }
+    
+    func initChartView(chartView: LineChartView, view: UIView) {
+        chartView.translatesAutoresizingMaskIntoConstraints = false
+        let constraintChartViewPosX: NSLayoutConstraint = NSLayoutConstraint(item: chartView, attribute: .centerX, relatedBy: .equal, toItem: view, attribute: .centerX, multiplier: 1.0, constant: 0.0)
+        let constraintChartViewPosY: NSLayoutConstraint = NSLayoutConstraint(item: chartView, attribute: .centerY, relatedBy: .equal, toItem: view, attribute: .centerY, multiplier: 1.0, constant: 0.0)
+        let constraintChartViewWidth: NSLayoutConstraint = NSLayoutConstraint(item: chartView, attribute: .width, relatedBy: .equal, toItem: view, attribute: .width, multiplier: 1.0, constant: 0.0)
+        let constraintChartViewHeight: NSLayoutConstraint = NSLayoutConstraint(item: chartView, attribute: .height, relatedBy: .equal, toItem: view, attribute: .height, multiplier: 1.0, constant: 0.0)
+        view.addConstraints([constraintChartViewPosX, constraintChartViewPosY, constraintChartViewWidth, constraintChartViewHeight])
     }
     
     func initReturnButton(button: UIButton, view: UIView) {
@@ -154,6 +219,15 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
         switch runningType! {
         case "quickStart":
             mainIndicator.text = "\(minutesString):\(secondsString)"
+            if timerCount % 5 == 0 {
+                velocityAssets[velocityAssetsIndex % 10] = velocityUse
+                velocityAssetsIndex += 1
+                var tempArray = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+                for i in 0..<10 {
+                    tempArray[i] = velocityAssets[(velocityAssetsIndex + i) % 10]
+                }
+                setChart(dataPoints: labelX, values: tempArray)
+            }
             break
         case "distanceStart":
             secondIndicator.text = "\(minutesString):\(secondsString)"
@@ -172,15 +246,17 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
         timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateTime), userInfo: nil, repeats: true)
     }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        var caloriesStr = "-"
         let currentLocation = locations.last!
-        if currentLocation.horizontalAccuracy < 0 || currentLocation.horizontalAccuracy>100 {
+        if currentLocation.horizontalAccuracy < 0 || currentLocation.horizontalAccuracy > 100 {
             return
         }
         let region = MKCoordinateRegionMakeWithDistance(currentLocation.coordinate, 1000, 1000)
         mapView.setRegion(region, animated: true)
         
         velocityUse = runningBrain.smoothingVelocityWithKalmanFiltering(Velocity: currentLocation.speed, Accuracy: currentLocation.horizontalAccuracy)
+        if velocityUse < 0 {
+            velocityUse = 0
+        }
         let paceSmoothInMinute = runningBrain.calculatePaceRate(Velocity: velocityUse)["minute"]!
         let paceSmoothInSecond = runningBrain.calculatePaceRate(Velocity: velocityUse)["second"]!
         let paceSmoothInMinuteNorm = String(format:"%02d",paceSmoothInMinute)
@@ -191,16 +267,21 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
         if calories != 0 {
             caloriesStr = String(format:"%.2f",calories)
         }
-
+        let distance = runningBrain.calculateDistance(start: locations.first!, end: locations.last!)
+        if distance > 0 {
+            distanceStr = String(format:"%.2f",distance)
+        }
         switch runningType! {
             case "quickStart":
-                mainCaption.text = "Time"
-                secondCaption.text = "Pace"
                 secondIndicator.text = paceStr
-                caloriesIndicator.text = caloriesStr
+                thirdIndicator.text = caloriesStr
+                thirdIndicator.text = distanceStr
             default:
                 break
             }
+        route.append(currentLocation.coordinate)
+        createPolyline(mapView: mapView, route: route)
+        CoreDataManager.saveLocation(velocity: velocityUse, longitude: currentLocation.coordinate.longitude, latitude: currentLocation.coordinate.latitude, timeStamp: currentLocation.timestamp as NSDate, startTimeStamp: startTimeStemp)
         
       
 //                longitudeLbl.text = "Longitude: \(currentLocation.coordinate.longitude)"
@@ -227,6 +308,25 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
             mapView.showsUserLocation = false
         }
     }
+    
+    func createPolyline(mapView: MKMapView, route: [CLLocationCoordinate2D]) {
+        let geodesic = MKGeodesicPolyline(coordinates: route, count: route.count)
+        self.mapView.add(geodesic)
+        
+//        UIView.animate(withDuration: 1.5, animations: { () -> Void in
+//            let span = MKCoordinateSpanMake(0.01, 0.01)
+//            let region1 = MKCoordinateRegion(center: route.first!, span: span)
+//            self.mapView.setRegion(region1, animated: true)
+//        })
+    }
+    
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        let polylineRenderer = MKPolylineRenderer(overlay: overlay)
+        polylineRenderer.strokeColor = UIColor.init(red: 24/255, green: 128/255, blue: 251/255, alpha: 1.0)
+        polylineRenderer.lineWidth = 5
+        return polylineRenderer
+    }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

@@ -21,6 +21,21 @@ class RunningBrain {
     private var previousVelocityAssets: Array<Double> = [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
     private var holdVelocity = 0.0
     private var holdAccuracy = 0.0
+    private var startLocation: CLLocation!
+    private var lastLocation: CLLocation!
+    private var traveledDistance: Double = 0
+    
+    func calculateDistance(start: CLLocation, end: CLLocation) -> Double {
+        if startLocation == nil {
+            startLocation = start 
+        } else {
+            let lastLocation = end
+            let distance = startLocation.distance(from: lastLocation)
+            startLocation = lastLocation
+            traveledDistance += distance
+        }
+        return traveledDistance/1000
+    }
     
     func calculateCalories(Velocity: Double, Weight: Double, Time: Double) -> Double {
         return Velocity/(20/9) * Weight * Time / 3600.0

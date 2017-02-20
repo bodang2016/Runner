@@ -161,7 +161,7 @@
                                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v72-4W-VUy" userLabel="caloriesIndicator">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v72-4W-VUy" userLabel="thirdIndicator">
                                                 <rect key="frame" x="10" y="63" width="90" height="25"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="25" id="UbJ-Sd-vFA"/>
@@ -170,7 +170,7 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="calories" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RdY-hA-ddv" userLabel="caloriesCaption">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RdY-hA-ddv" userLabel="thirdCaption">
                                                 <rect key="frame" x="10" y="88" width="90" height="14"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="14" id="kcc-uo-la3"/>
@@ -257,7 +257,6 @@
                     </view>
                     <connections>
                         <outlet property="BottomView" destination="2td-TL-Dkq" id="fXI-N3-tkh"/>
-                        <outlet property="caloriesIndicator" destination="v72-4W-VUy" id="SOM-MC-oGJ"/>
                         <outlet property="mainCaption" destination="ZZs-rt-QCs" id="CYG-Fo-O33"/>
                         <outlet property="mainIndicator" destination="qCr-e2-5Qg" id="rUM-M4-3cR"/>
                         <outlet property="pageControl" destination="z5c-PF-73v" id="AwB-Ce-dUc"/>
@@ -266,6 +265,8 @@
                         <outlet property="secondCaption" destination="etj-q5-Pzh" id="h3A-LI-0Kt"/>
                         <outlet property="secondIndicator" destination="0gN-dL-n5e" id="5gM-Tb-03z"/>
                         <outlet property="stopButton" destination="tjY-60-Y2d" id="Bdh-ds-Otm"/>
+                        <outlet property="thirdCaption" destination="RdY-hA-ddv" id="gqD-H4-YAN"/>
+                        <outlet property="thirdIndicator" destination="v72-4W-VUy" id="9bd-cd-74V"/>
                         <outlet property="topView" destination="oDt-9g-X7k" id="Ge8-Bc-l6R"/>
                     </connections>
                 </viewController>
