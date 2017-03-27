@@ -2,7 +2,7 @@
 //  Location+CoreDataProperties.swift
 //  Runner
 //
-//  Created by Bodang on 13/02/2017.
+//  Created by Bodang on 20/02/2017.
 //  Copyright © 2017 Bodang. All rights reserved.
 //
 

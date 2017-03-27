@@ -17,18 +17,33 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
     var runningType: String?
     var velocityUse = 0.0
     
+    var timerSet: Int?
+    var distanceSet: Double?
+    var paceSet: Double?
+    
     var timerCount = 0
     var timerStr: String?
     var timer = Timer()
-    var weight = 70.0
     var route = [CLLocationCoordinate2D]()
     
     var velocityAssetsIndex = 0
     var velocityAssets: Array<Double> = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     var labelX = [" ", " ", " ", " ", " ", " ", " ", " ", " ", " "]
     let startTimeStemp = NSDate()
-    var caloriesStr = "-"
-    var distanceStr = "-"
+    var caloriesStr = "0"
+    var distanceStr = "0"
+    
+    let defaults = UserDefaults.standard
+    var age = 20
+    var weight = 65.0
+    var smoothLevel: Float = 2
+    var gender = "Male"
+    let secondPerYear = 31536000.0
+    
+    let genderConstant = "KEY_GENDER"
+    let ageConstant = "KEY_AGE"
+    let weightConstant = "KEY_WEIGHT"
+    let smoothConstant = "KEY_SMOOTH"
     
     
     var frame: CGRect = CGRect(x: 0, y: 0, width: 0, height: 0)
@@ -45,6 +60,11 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
     @IBOutlet weak var secondCaption: UILabel!
     @IBOutlet weak var thirdIndicator: UILabel!
     @IBOutlet weak var thirdCaption: UILabel!
+    
+    @IBOutlet weak var smoothIndicator: UIButton!
+    @IBOutlet weak var smoothLabel: UILabel!
+    
+    @IBOutlet weak var signalLabel: UILabel!
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var topView: UIView!
@@ -67,10 +87,16 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
         }
     }
     @IBAction func stopButtonAction(_ sender: UIButton) {
-        runningBrain.getLocationManager().stopUpdatingLocation()
-        CoreDataManager.saveRun(timeStamp: startTimeStemp, duration: Int16(timerCount), distance: Double(distanceStr)!, calories: Double(caloriesStr)!)
-//        CoreDataManager.test()
-        dismiss(animated: true, completion: nil)
+        let alertController:UIAlertController=UIAlertController(title: "Finish Activity?", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+        alertController.addAction(UIAlertAction(title: "Finish", style: UIAlertActionStyle.destructive){
+            (alertAction)->Void in
+            self.runningBrain.getLocationManager().stopUpdatingLocation()
+            CoreDataManager.saveRun(timeStamp: self.startTimeStemp, duration: Int16(self.timerCount), distance: Double(self.distanceStr)!, calories: Double(self.caloriesStr)!)
+            self.dismiss(animated: true, completion: nil)
+        })
+        alertController.addAction(UIAlertAction(title: "Continue", style: UIAlertActionStyle.cancel,handler:nil))
+        self.present(alertController, animated: true, completion: nil)
+        
     }
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,6 +114,8 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
         scrollView.isUserInteractionEnabled = true
         scrollView.delaysContentTouches = false
         self.scrollView.isPagingEnabled = true
+        
+        loadPreference()
         
         startRunning()
         
@@ -123,6 +151,25 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
             mainCaption.text = "Time"
             secondCaption.text = "Pace"
             thirdCaption.text = "Distance"
+            break
+        case "distanceStart":
+            mainCaption.text = "Distance"
+            secondCaption.text = "Pace"
+            thirdCaption.text = "Time"
+            break
+            
+        case "timedStart":
+            mainCaption.text = "Time"
+            secondCaption.text = "Pace"
+            thirdCaption.text = "Distance"
+            break
+            
+        case "paceStart":
+            mainCaption.text = "Pace"
+            secondCaption.text = "Distance"
+            thirdCaption.text = "Time"
+            break
+
         default:
             break
         }
@@ -230,7 +277,60 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
             }
             break
         case "distanceStart":
-            secondIndicator.text = "\(minutesString):\(secondsString)"
+            thirdIndicator.text = "\(minutesString):\(secondsString)"
+            if timerCount % 5 == 0 {
+                velocityAssets[velocityAssetsIndex % 10] = velocityUse
+                velocityAssetsIndex += 1
+                var tempArray = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+                for i in 0..<10 {
+                    tempArray[i] = velocityAssets[(velocityAssetsIndex + i) % 10]
+                }
+                setChart(dataPoints: labelX, values: tempArray)
+            }
+            break
+        case "timedStart":
+            mainIndicator.text = "\(minutesString):\(secondsString)"
+            if timerCount % 5 == 0 {
+                velocityAssets[velocityAssetsIndex % 10] = velocityUse
+                velocityAssetsIndex += 1
+                var tempArray = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+                for i in 0..<10 {
+                    tempArray[i] = velocityAssets[(velocityAssetsIndex + i) % 10]
+                }
+                setChart(dataPoints: labelX, values: tempArray)
+            }
+            break
+        case "paceStart":
+            thirdIndicator.text = "\(minutesString):\(secondsString)"
+            if timerCount % 5 == 0 {
+                velocityAssets[velocityAssetsIndex % 10] = velocityUse
+                velocityAssetsIndex += 1
+                var tempArray = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+                for i in 0..<10 {
+                    tempArray[i] = velocityAssets[(velocityAssetsIndex + i) % 10]
+                }
+                setChart(dataPoints: labelX, values: tempArray)
+            }
+            if timerCount % 30 == 0 {
+                if let checkPace = paceSet {
+                    let velocity = 1000 / checkPace
+                    if velocity - velocityUse > 0.3 {
+                        let alertController:UIAlertController=UIAlertController(title: "Speed up", message: "Your are slower than your target", preferredStyle: UIAlertControllerStyle.alert)
+                        self.present(alertController, animated: true, completion: nil)
+                        let time = DispatchTime.now() + 5
+                        DispatchQueue.main.asyncAfter(deadline: time){
+                            alertController.dismiss(animated: true, completion: nil)
+                        }
+                    } else if velocity - velocityUse < -0.3 {
+                        let alertController:UIAlertController=UIAlertController(title: "Slow down", message: "Your are faster than your target", preferredStyle: UIAlertControllerStyle.alert)
+                        self.present(alertController, animated: true, completion: nil)
+                        let time = DispatchTime.now() + 5
+                        DispatchQueue.main.asyncAfter(deadline: time){
+                            alertController.dismiss(animated: true, completion: nil)
+                        }
+                    }
+                }
+            }
             break
         default:
             break
@@ -250,10 +350,26 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
         if currentLocation.horizontalAccuracy < 0 || currentLocation.horizontalAccuracy > 100 {
             return
         }
+        setSignalStatus(status: currentLocation.horizontalAccuracy)
         let region = MKCoordinateRegionMakeWithDistance(currentLocation.coordinate, 1000, 1000)
         mapView.setRegion(region, animated: true)
-        
-        velocityUse = runningBrain.smoothingVelocityWithKalmanFiltering(Velocity: currentLocation.speed, Accuracy: currentLocation.horizontalAccuracy)
+        switch smoothLevel {
+        case 0:
+            velocityUse = currentLocation.speed
+            setSmoothStatus(status: 0)
+            break
+        case 1:
+            velocityUse = runningBrain.smoothingVelocityWithAverageNumber(Velocity: currentLocation.speed, Accuracy: currentLocation.horizontalAccuracy)
+            setSmoothStatus(status: 1)
+            break
+        case 2:
+            velocityUse = runningBrain.smoothingVelocityWithKalmanFiltering(Velocity: currentLocation.speed, Accuracy: currentLocation.horizontalAccuracy)
+            setSmoothStatus(status: runningBrain.getSmoothStatus())
+            break
+        default:
+            velocityUse = 0
+            break
+        }
         if velocityUse < 0 {
             velocityUse = 0
         }
@@ -262,23 +378,54 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
         let paceSmoothInMinuteNorm = String(format:"%02d",paceSmoothInMinute)
         let paceSmoothInSecondNorm = String(format:"%02d",paceSmoothInSecond)
         let paceStr = "\(paceSmoothInMinuteNorm):\(paceSmoothInSecondNorm)"
-       
-        let calories = runningBrain.calculateCalories(Velocity: velocityUse, Weight: weight, Time: Double(timerCount))
-        if calories != 0 {
-            caloriesStr = String(format:"%.2f",calories)
-        }
         let distance = runningBrain.calculateDistance(start: locations.first!, end: locations.last!)
         if distance > 0 {
             distanceStr = String(format:"%.2f",distance)
         }
+        let calories = runningBrain.calculateCalories(Distance: distance, Weight: weight, Time: Double(timerCount))
+        if calories != 0 {
+            caloriesStr = String(format:"%.2f",calories)
+        }
         switch runningType! {
-            case "quickStart":
-                secondIndicator.text = paceStr
-                thirdIndicator.text = caloriesStr
-                thirdIndicator.text = distanceStr
-            default:
-                break
+        case "quickStart":
+            secondIndicator.text = paceStr
+//          thirdIndicator.text = caloriesStr
+            thirdIndicator.text = distanceStr
+            break
+        case "distanceStart":
+            secondIndicator.text = paceStr
+//          thirdIndicator.text = caloriesStr
+            mainIndicator.text = distanceStr
+            if let checkDistance = distanceSet {
+                if checkDistance == Double(distanceStr) {
+                    let alertController = UIAlertController(title: "congratulations!", message:
+                        "You reach your goal", preferredStyle: UIAlertControllerStyle.alert)
+                    alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default,handler: nil))
+                    self.present(alertController, animated: true, completion: nil)
+                }
             }
+            break
+        case "timedStart":
+            secondIndicator.text = paceStr
+//          thirdIndicator.text = caloriesStr
+            thirdIndicator.text = distanceStr
+            if let checkTime = timerSet {
+                if (checkTime == timerCount) {
+                    let alertController = UIAlertController(title: "congratulations!", message:
+                        "You reach your goal", preferredStyle: UIAlertControllerStyle.alert)
+                    alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default,handler: nil))
+                    self.present(alertController, animated: true, completion: nil)
+                }
+            }
+            break
+        case "paceStart":
+            mainIndicator.text = paceStr
+//          thirdIndicator.text = caloriesStr
+            secondIndicator.text = distanceStr
+            break
+        default:
+            break
+        }
         route.append(currentLocation.coordinate)
         createPolyline(mapView: mapView, route: route)
         CoreDataManager.saveLocation(velocity: velocityUse, longitude: currentLocation.coordinate.longitude, latitude: currentLocation.coordinate.latitude, timeStamp: currentLocation.timestamp as NSDate, startTimeStamp: startTimeStemp)
@@ -325,6 +472,54 @@ class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationM
         polylineRenderer.strokeColor = UIColor.init(red: 24/255, green: 128/255, blue: 251/255, alpha: 1.0)
         polylineRenderer.lineWidth = 5
         return polylineRenderer
+    }
+    
+    func loadPreference() {
+        if let genderValue = defaults.string(forKey: genderConstant) {
+            self.gender = genderValue
+        }
+        if let ageValue = defaults.data(forKey: ageConstant) {
+            let date = NSKeyedUnarchiver.unarchiveObject(with: ageValue) as? Date
+            let year: Double = Double(Date().timeIntervalSince(date!).description)! / self.secondPerYear
+            self.age = Int(year)
+        }
+        if let weightValue = defaults.string(forKey: weightConstant) {
+            self.weight = Double(weightValue)!
+        }
+        if let smoothValue = defaults.string(forKey: smoothConstant) {
+            smoothLevel = Float(smoothValue)!
+        }
+    }
+    
+    func setSmoothStatus(status: Int) {
+        switch status {
+        case 0:
+            smoothIndicator.setImage(UIImage(named:"smooth_raw"), for: .normal)
+            smoothLabel.text = "Raw"
+            break
+        case 1:
+            smoothIndicator.setImage(UIImage(named:"smooth_average"), for: .normal)
+            smoothLabel.text = "Average"
+            break
+        case 2:
+            smoothIndicator.setImage(UIImage(named:"smooth_kalman"), for: .normal)
+            smoothLabel.text = "Kalman"
+            break
+        default:
+            smoothIndicator.setImage(UIImage(named:"smooth_raw"), for: .normal)
+            smoothLabel.text = "Raw"
+            break
+        }
+    }
+    
+    func setSignalStatus(status: Double) {
+        if status <= 10 {
+            signalLabel.text = "Excellent"
+        } else if status <= 30 {
+            signalLabel.text = "Good"
+        } else {
+            signalLabel.text = "Poor"
+        }
     }
     
     

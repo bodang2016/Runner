@@ -24,6 +24,7 @@ class RunningBrain {
     private var startLocation: CLLocation!
     private var lastLocation: CLLocation!
     private var traveledDistance: Double = 0
+    private var smoothStatus = 0
     
     func calculateDistance(start: CLLocation, end: CLLocation) -> Double {
         if startLocation == nil {
@@ -37,13 +38,14 @@ class RunningBrain {
         return traveledDistance/1000
     }
     
-    func calculateCalories(Velocity: Double, Weight: Double, Time: Double) -> Double {
-        return Velocity/(20/9) * Weight * Time / 3600.0
+    func calculateCalories(Distance: Double, Weight: Double, Time: Double) -> Double {
+        return Distance/1.61 * Weight * 2.2 * 0.75
     }
     
     func smoothingVelocityWithAverageNumber(Velocity:Double, Accuracy: Double) -> Double {
         velocityAssets[velocityAssetsIndex % 10] = Velocity
         velocityAssetsIndex += 1
+        smoothStatus = 1
         return (velocityAssets[0] + velocityAssets[1] + velocityAssets[2] + velocityAssets[3] + velocityAssets[4] + velocityAssets[5] + velocityAssets[6] + velocityAssets[7] + velocityAssets[8] + velocityAssets[9]) / 10
     }
     
@@ -95,6 +97,7 @@ class RunningBrain {
         if kalmanSwitch < 20 {
             kalmanSwitch += 1
             setPerviousVelocity(velocity: mean)
+            smoothStatus = 1
         } else if velocityChanging() {
             if speeding() {
                 for _ in 1...10 {
@@ -103,12 +106,18 @@ class RunningBrain {
             } else {
                 setPerviousVelocity(velocity: mean)
             }
+            smoothStatus = 1
         } else {
             setPerviousVelocity(velocity: holdVelocity)
+            smoothStatus = 2
             print("kalman")
         }
         holdAccuracy = Accuracy
         return holdVelocity
+    }
+    
+    func getSmoothStatus() -> Int {
+        return smoothStatus
     }
     
     func calculatePaceRate(Velocity: Double) -> Dictionary<String, Int>{

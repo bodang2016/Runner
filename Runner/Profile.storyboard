@@ -14,7 +14,7 @@
         <scene sceneID="8Tf-Xr-jpE">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="CEp-Cc-OJG" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" systemItem="contacts" id="SR5-hH-Ff7"/>
+                    <tabBarItem key="tabBarItem" systemItem="history" id="SR5-hH-Ff7"/>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="7l3-wo-5L3">
@@ -43,7 +43,7 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="85"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="yqK-l7-bFb" id="nks-9s-rcB">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="85"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="84"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="SOe-sB-AAO">

@@ -91,5 +91,25 @@ class CoreDataTableViewController: UITableViewController, NSFetchedResultsContro
         tableView.cellForRow(at: indexPath)?.setSelected(false, animated: true)
         self.performSegue(withIdentifier: "showSummaryView", sender: UITableView.self)
     }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == UITableViewCellEditingStyle.delete) {
+            // handle delete (by removing the data from your array and updating the tableview)
+            if let dataSet = fetchedResultsController?.fetchedObjects![indexPath.row] as? NSManagedObject {
+                let alertController:UIAlertController=UIAlertController(title: "Delete Activity?", message: nil, preferredStyle: UIAlertControllerStyle.actionSheet)
+                alertController.addAction(UIAlertAction(title: "Delete", style: UIAlertActionStyle.destructive){
+                    (alertAction)->Void in
+                    CoreDataManager.deleteRun(timeStamp: dataSet.value(forKey: "timeStamp") as! NSDate)
+                })
+                alertController.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.cancel,handler:nil))
+                self.present(alertController, animated: true, completion: nil)
+            }
+            tableView.reloadData()
+        }
+    }
 }
 

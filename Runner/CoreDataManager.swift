@@ -37,6 +37,18 @@ class CoreDataManager: NSObject {
             }
         }
     }
+    
+    class func deleteRun(timeStamp: NSDate) {
+        let context = getContext()
+        context.perform {
+            _ = Run.deleteRunInfo(timeStamp: timeStamp, inManagedObjectContext: context)
+            do {
+                try context.save()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
 
     
 //    class func test() {

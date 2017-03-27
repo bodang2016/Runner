@@ -22,7 +22,8 @@ class HistoryTableViewController: CoreDataTableViewController {
         if let context = managedObjectContext {
             let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Run")
             request.sortDescriptors = [NSSortDescriptor(key: "timeStamp", ascending: false)]
-            fetchedResultsController = NSFetchedResultsController(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: "sectionByDay", cacheName: nil)
+            //sectionbyday
+            fetchedResultsController = NSFetchedResultsController(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
         } else {
             fetchedResultsController = nil
         }

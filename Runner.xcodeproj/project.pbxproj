@@ -27,6 +27,7 @@
 		10861E541E529C0A00BC4F7B /* CoreDataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10861E531E529C0A00BC4F7B /* CoreDataTableViewController.swift */; };
 		10861E561E52B5B100BC4F7B /* HistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10861E551E52B5B100BC4F7B /* HistoryTableViewCell.swift */; };
 		10A338A41E59167B009487A6 /* SummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10A338A31E59167B009487A6 /* SummaryViewController.swift */; };
+		10A338B01E5A7A23009487A6 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10A338AF1E5A7A23009487A6 /* SettingViewController.swift */; };
 		10ECF5111E36EB21004EE9A6 /* RunningViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10ECF5101E36EB21004EE9A6 /* RunningViewController.swift */; };
 		10FE138D1E4957F90085BBC0 /* Charts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10FE13881E4957450085BBC0 /* Charts.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		10FE138E1E4957F90085BBC0 /* Charts.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 10FE13881E4957450085BBC0 /* Charts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -100,6 +101,7 @@
 		10861E531E529C0A00BC4F7B /* CoreDataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataTableViewController.swift; sourceTree = "<group>"; };
 		10861E551E52B5B100BC4F7B /* HistoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableViewCell.swift; sourceTree = "<group>"; };
 		10A338A31E59167B009487A6 /* SummaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryViewController.swift; sourceTree = "<group>"; };
+		10A338AF1E5A7A23009487A6 /* SettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		10ECF5101E36EB21004EE9A6 /* RunningViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RunningViewController.swift; sourceTree = "<group>"; };
 		10FE13811E4957440085BBC0 /* Charts.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Charts.xcodeproj; path = "../../../../Downloads/Charts-master/Charts.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -198,6 +200,7 @@
 			children = (
 				104A6D531E31589000D7070A /* DashViewController.swift */,
 				10ECF5101E36EB21004EE9A6 /* RunningViewController.swift */,
+				10A338AF1E5A7A23009487A6 /* SettingViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -348,6 +351,7 @@
 				104A6D761E3165C900D7070A /* TabBarStyle.swift in Sources */,
 				10A338A41E59167B009487A6 /* SummaryViewController.swift in Sources */,
 				10861E4B1E51116900BC4F7B /* Location+CoreDataProperties.swift in Sources */,
+				10A338B01E5A7A23009487A6 /* SettingViewController.swift in Sources */,
 				104A6D781E31AC4400D7070A /* RunningBrain.swift in Sources */,
 				104A6D741E3161DF00D7070A /* NavgationBarStyle.swift in Sources */,
 				104A6D521E31589000D7070A /* AppDelegate.swift in Sources */,

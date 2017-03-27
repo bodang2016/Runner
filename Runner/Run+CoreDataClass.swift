@@ -31,6 +31,15 @@ public class Run: NSManagedObject {
         }
         return nil
     }
+    
+    class func deleteRunInfo(timeStamp: NSDate, inManagedObjectContext context: NSManagedObjectContext) {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Run")
+        request.predicate = NSPredicate(format: "timeStamp = %@", timeStamp)
+        if let run = (try? context.fetch(request))?.first as? Run {
+            context.delete(run)
+        }
+    }
+    
     var sectionByDay: String{
         get{
             let dateFormatter = DateFormatter()

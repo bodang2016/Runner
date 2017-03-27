@@ -2,7 +2,7 @@
 //  Run+CoreDataProperties.swift
 //  Runner
 //
-//  Created by Bodang on 13/02/2017.
+//  Created by Bodang on 20/02/2017.
 //  Copyright © 2017 Bodang. All rights reserved.
 //
 
@@ -16,10 +16,10 @@ extension Run {
         return NSFetchRequest<Run>(entityName: "Run");
     }
 
+    @NSManaged public var calories: Double
     @NSManaged public var distance: Double
     @NSManaged public var duration: Int16
     @NSManaged public var timeStamp: NSDate?
-    @NSManaged public var calories: Double
     @NSManaged public var locations: NSOrderedSet?
 
 }

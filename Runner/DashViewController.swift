@@ -62,6 +62,10 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
     let pacePlus: UIButton = UIButton()
     let paceIndicator: UILabel = UILabel()
     
+    var timer: Int?
+    var distance: Double?
+    var pace: Double?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -264,6 +268,19 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
                 switch identifier {
                 case "showRunningView":
                     RunningVC.runningType = "quickStart"
+                    break
+                case "showDistanceRunningView" :
+                    RunningVC.runningType = "distanceStart"
+                    RunningVC.distanceSet = distance!
+                    break
+                case "showTimedRunningView" :
+                    RunningVC.runningType = "timedStart"
+                    RunningVC.timerSet = timer!
+                    break
+                case "showPaceRunningView" :
+                    RunningVC.runningType = "paceStart"
+                    RunningVC.paceSet = pace!
+                    break
                 default:
                     return
                 }
@@ -278,7 +295,9 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
     }
     
     func distanceRunStartAction(sender: UIButton) {
+        distance = Double(distanceIndicatorValue)
         print("distance \(distanceIndicatorValue)")
+        self.performSegue(withIdentifier: "showDistanceRunningView", sender: UIButton.self)
     }
     
     func timedRunStartAction(sender: UIButton) {
@@ -286,6 +305,8 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
         let timeIndicatorMinute: Int = Int(timeIndicatorValueArr[0])!
         let timeIndicatorSecond: Int? = timeIndicatorValueArr.count > 1 ? Int(timeIndicatorValueArr[1]) : nil
         print("minute \(timeIndicatorMinute) second \(timeIndicatorSecond!)")
+        timer = timeIndicatorMinute * 60 + timeIndicatorSecond!
+        self.performSegue(withIdentifier: "showTimedRunningView", sender: UIButton.self)
     }
     
     func paceRunStartAction(sender: UIButton) {
@@ -293,6 +314,8 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
         let paceIndicatorMinute: String = paceIndicatorValueArr[0]
         let paceIndicatorSecond: String? = paceIndicatorValueArr.count > 1 ? paceIndicatorValueArr[1] : nil
         print("minute \(paceIndicatorMinute) second \(paceIndicatorSecond!)")
+        pace = Double(paceIndicatorMinute)! * 60 + Double(paceIndicatorSecond!)!
+        self.performSegue(withIdentifier: "showPaceRunningView", sender: UIButton.self)
     }
     
     func distanceMinusAction(sender: UIButton) {
@@ -402,13 +425,13 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
         MapView.setRegion(region, animated: true)
     }
     
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        let errorType = error.localizedDescription
-        let alertController = UIAlertController(title: "GPS Signal Lost", message: errorType, preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "OK", style: .cancel, handler: { action in })
-        alertController.addAction(okAction)
-        present(alertController, animated: true, completion: nil)
-    }
+//    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+//        let errorType = error.localizedDescription
+//        let alertController = UIAlertController(title: "GPS Signal Lost", message: errorType, preferredStyle: .alert)
+//        let okAction = UIAlertAction(title: "OK", style: .cancel, handler: { action in })
+//        alertController.addAction(okAction)
+//        present(alertController, animated: true, completion: nil)
+//    }
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         switch status {
             

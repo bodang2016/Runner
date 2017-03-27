@@ -151,7 +151,9 @@ class SummaryViewController: UIViewController, UIScrollViewDelegate, CLLocationM
     
     func initDistanceIndicator() {
         if let dataSet = selectedItem as? NSManagedObject {
-            distanceIndicator.text = String(describing: dataSet.value(forKey: "distance")!)
+            let data: Double = dataSet.value(forKey: "distance") as! Double
+            let distance = String(describing: data)
+            distanceIndicator.text = distance
         }
        
     }
@@ -191,7 +193,9 @@ class SummaryViewController: UIViewController, UIScrollViewDelegate, CLLocationM
     
     func initCaloriesIndicator() {
         if let dataSet = selectedItem as? NSManagedObject {
-            caloriesIndicator.text = String(describing: dataSet.value(forKey: "calories")!)
+            let data: Double = dataSet.value(forKey: "calories") as! Double
+            let calories = String(describing: data)
+            caloriesIndicator.text = calories
         }
     }
     
@@ -200,7 +204,9 @@ class SummaryViewController: UIViewController, UIScrollViewDelegate, CLLocationM
         self.mapView.add(geodesic)
             UIView.animate(withDuration: 1.5, animations: { () -> Void in
                 let span = MKCoordinateSpanMake(0.01, 0.01)
-                let region1 = MKCoordinateRegion(center: route.first!, span: span)
+                let centerLatitude = (route.first!.latitude + route.last!.latitude) / 2
+                let centerLongitude = (route.first!.longitude + route.last!.longitude) / 2
+                let region1 = MKCoordinateRegion(center: CLLocationCoordinate2DMake(centerLatitude, centerLongitude), span: span)
                 self.mapView.setRegion(region1, animated: true)
             })
     }
