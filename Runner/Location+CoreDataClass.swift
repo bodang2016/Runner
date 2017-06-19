@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-
+//This class provides the operation function of Location object in Core Data
 public class Location: NSManagedObject {
     class func locationWithRunInfo(velocity: Double, longitude: Double, latitude: Double, timeStamp: NSDate, startTimeStamp: NSDate, inManagedObjectContext context: NSManagedObjectContext) -> Location? {
         if let location = NSEntityDescription.insertNewObject(forEntityName: "Location", into: context) as? Location {

@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-
+//This class provides the operation function of Run object in Core Data
 public class Run: NSManagedObject {
     class func runWithRunInfo(timeStamp: NSDate, duration: Int16?, distance: Double?, calories: Double?, inManagedObjectContext context: NSManagedObjectContext) -> Run? {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Run")

@@ -11,6 +11,7 @@ import MapKit
 import Charts
 import CoreData
 
+//This is the controller class of Summary view, it provides the Outlet and Action functions for the UI components
 class SummaryViewController: UIViewController, UIScrollViewDelegate, CLLocationManagerDelegate, MKMapViewDelegate {
 
     @IBOutlet weak var indicatorView: UIView!

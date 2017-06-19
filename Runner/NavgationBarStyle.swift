@@ -8,6 +8,7 @@
 
 import UIKit
 
+//This extension customise the NavigationBar
 extension UINavigationBar {
     class func setupStyle() {
         let bar = UINavigationBar.appearance()

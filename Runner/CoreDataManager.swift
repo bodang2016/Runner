@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 
+//This class provides the interface for controller to access the Core Data model
 class CoreDataManager: NSObject {
     private class func getContext() -> NSManagedObjectContext {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate

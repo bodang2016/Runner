@@ -159,7 +159,7 @@
                             <tableViewSection headerTitle="Smooth" id="hmT-2q-Qyp">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="9F8-1l-mVh">
-                                        <rect key="frame" x="0.0" y="245" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="244" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9F8-1l-mVh" id="zAy-z5-MGp">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -207,7 +207,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vUu-7S-sO1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2656.8000000000002" y="-888.30584707646187"/>
+            <point key="canvasLocation" x="2628" y="-554"/>
         </scene>
         <!--Running View Controller-->
         <scene sceneID="Cmm-Ov-wFi">
@@ -484,7 +484,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jJy-M6-H0p" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1717.5999999999999" y="-888.30584707646187"/>
+            <point key="canvasLocation" x="1900" y="-553"/>
         </scene>
     </scenes>
     <resources>

@@ -7,7 +7,8 @@
 
 import UIKit
 import CoreData
-
+//This class inherits the UITableViewController and implementes some useful functions to fetch the data from CoreData into Table view
+//Note that this class is modified from the resource of a public class presented by stanford university
 class CoreDataTableViewController: UITableViewController, NSFetchedResultsControllerDelegate
 {
     var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>? {

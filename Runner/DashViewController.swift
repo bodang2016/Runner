@@ -10,6 +10,7 @@ import UIKit
 import MapKit
 import Foundation
 
+//This is the controller class of dash view, it provides the Outlet and Action functions for the UI components
 class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollViewDelegate {
 
     @IBOutlet weak var pageControl: UIPageControl!
@@ -434,9 +435,6 @@ class DashViewController: UIViewController, CLLocationManagerDelegate, UIScrollV
 //    }
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         switch status {
-            
-        //need change!!!!!!!!!!!!!
-            
         case .authorizedAlways, .authorizedWhenInUse:
             runningBrain.getLocationManager().startUpdatingLocation()
             MapView.showsUserLocation = true

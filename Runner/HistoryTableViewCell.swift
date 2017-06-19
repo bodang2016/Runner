@@ -6,6 +6,7 @@
 //  Copyright © 2017 Bodang. All rights reserved.
 //
 
+//This class defines the internal logic of each cell in UITableView
 import UIKit
 
 class HistoryTableViewCell: UITableViewCell {

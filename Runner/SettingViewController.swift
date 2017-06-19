@@ -8,6 +8,7 @@
 
 import UIKit
 
+//This is the controller class of setting view, it provides the Outlet and Action functions for the UI components
 class SettingViewController: UITableViewController, UIPickerViewDataSource, UIPickerViewDelegate {
     
     let genderConstant = "KEY_GENDER"

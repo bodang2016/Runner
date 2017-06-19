@@ -8,6 +8,7 @@
 
 import UIKit
 
+//This extension customise the NavigationBar
 extension UITabBar {
     class func setupStyle() {
         let barItem = UITabBarItem.appearance()

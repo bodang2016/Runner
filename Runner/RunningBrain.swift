@@ -10,6 +10,7 @@ import Foundation
 import CoreLocation
 import CoreMotion
 
+//This class contains all smoothing algorithms and the CoreLocationManager instance
 class RunningBrain {
     private let locationManager: CLLocationManager = CLLocationManager()
     
@@ -159,11 +160,11 @@ class RunningBrain {
         return temp
     }
     
-    public func velocityChanging() -> Bool {
+    private func velocityChanging() -> Bool {
         return abs((velocityAssets[0] + velocityAssets[1] + velocityAssets[2] / 3) - (velocityAssets[7] + velocityAssets[8] + velocityAssets[9] / 3)) > 0.4
     }
     
-    public func speeding() -> Bool {
+    private func speeding() -> Bool {
         return abs((velocityAssets[0] + velocityAssets[1] + velocityAssets[2] / 3) - (velocityAssets[7] + velocityAssets[8] + velocityAssets[9] / 3)) > 1.5
     }
     

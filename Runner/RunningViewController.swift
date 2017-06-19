@@ -11,6 +11,7 @@ import MapKit
 import Foundation
 import Charts
 
+//This is the controller class of running view, it provides the Outlet and Action functions for the UI components
 class RunningViewController: UIViewController, UIScrollViewDelegate, CLLocationManagerDelegate, MKMapViewDelegate{
     
     var runningBrain = RunningBrain()

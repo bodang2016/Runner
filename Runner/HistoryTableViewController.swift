@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 
+//This is the controller class of history view, it provides the Outlet and Action functions for the UI components, this class inherits the CoreDataTableViewController class
 class HistoryTableViewController: CoreDataTableViewController {
     
     var managedObjectContext: NSManagedObjectContext? {
